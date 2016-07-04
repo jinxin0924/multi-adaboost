@@ -96,7 +96,10 @@ class AdaBoostClassifier(object):
 
     def fit(self, X, y):
         self.n_samples = X.shape[0]
-        self.classes_ =  np.array(list(set(y)))
+        #There is hidden trouble for classes, here the classes will be sorted.
+        # So in boost we have to ensure that the predict results have the same classes sort
+        self.classes_ =  np.array(sorted(list(set(y))))
+
         self.n_classes_= len(self.classes_)
         for iboost in range(self.n_estimators_):
             if iboost == 0:
