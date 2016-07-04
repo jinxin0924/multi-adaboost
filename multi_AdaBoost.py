@@ -126,6 +126,9 @@ class AdaBoostClassifier(object):
 
     def real_boost(self, X, y, sample_weight):
         estimator = deepcopy(self.base_estimator_)
+        if self.random_state_:
+            estimator.set_params(random_state=1)
+
         estimator.fit(X, y, sample_weight=sample_weight)
 
         y_pred = estimator.predict(X)
@@ -165,6 +168,9 @@ class AdaBoostClassifier(object):
 
     def discrete_boost(self, X, y, sample_weight):
         estimator = deepcopy(self.base_estimator_)
+        if self.random_state_:
+            estimator.set_params(random_state=1)
+
         estimator.fit(X, y, sample_weight=sample_weight)
 
         y_pred = estimator.predict(X)
