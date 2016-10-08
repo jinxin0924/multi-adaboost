@@ -14,6 +14,7 @@ This is my learning experience when I read the paper [Multi-class AdaBoost](http
 
 ## AdaBoost
 Let T(x) denote a weak multi-class classifier that assigns a class label to x, then the AdaBoost algorithm proceeds as follows:
+
 ![AdaBoost](http://upload-images.jianshu.io/upload_images/1825085-234a26e11524427e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 Pay attention to the weak classifier weight, α, to let α >0, we need to ensure the err<0.5. This can be easily done when it's binary classification problem, because error rate of random guessing is 0.5. But  it is difficult to achieve in multi-class case. So it may easily fail in multi-class case.
@@ -26,7 +27,7 @@ First let's take a look at **Additive Model**:
 
 Typically, {βm, γm} are estimated by minimizing some loss function L, which measures the prediction errors over training data.
 ![](http://upload-images.jianshu.io/upload_images/1825085-c908c9e7b2ad6e04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-Directly optimizing such loss function is often difficult. However, consider it's an additive model, a simple greedy method can be used. We can  sequentially optimize the following  loss function, then add new base functions to the expansion function f(x) without changing the parameters that have been added.
+Directly optimizing such loss function is often difficult. However, consider it is an additive model, a simple greedy method can be used. We can  sequentially optimize the following  loss function, then add new base functions to the expansion function f(x) without changing the parameters that have been added.
 
 ![loss function for each step](http://upload-images.jianshu.io/upload_images/1825085-f17795a2453e0199.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -67,7 +68,7 @@ denote **err_m** as
 Then 
 ![](http://www.forkosh.com/mathtex.cgi? \Large \beta _m=\frac{1}{2} log \frac{1-err_m}{err_m})
 
-Look familiar, right? It is actually the AdaBoost's weak classifier weight, α_m, except the 1/2. I take the 1/2 as learning rate.
+Look familiar, right? It is actually the the weak classifier weight for Adaboost, α_m, except the 1/2. I take the 1/2 as learning rate.
 
 Also recall w_m,
 ![](http://www.forkosh.com/mathtex.cgi? \Large  w^{(m)}_i = exp[-y_i f_{m-1}(x_i)] )
@@ -81,13 +82,13 @@ compare to the weight in AdaBoost,
 We can know that they are equivalent.
 
 
-As I mentioned before, AdaBoost can easily fail in multi-class case due to the error rate. To avoid this, a natural way is to do something about α. That's what *SAMME* does. SAMME is short for Stagewise Additive Modeling using a Multi-class Exponential loss function. 
+As I mentioned before, AdaBoost can easily fail in multi-class case due to the error rate. To avoid this, a natural way is to do something about α. That is what *SAMME* does. SAMME is short for Stagewise Additive Modeling using a Multi-class Exponential loss function. 
 
 **SAMME**
 ![](http://upload-images.jianshu.io/upload_images/1825085-4ddd1ee392f1ad59.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![](http://upload-images.jianshu.io/upload_images/1825085-f56688d8bc6e5e13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-Note that SAMME  is very similar to AdaBoost, except the term log(K-1). Obviously, when K=2, SAMME is equivalent to AdaBoost. In SAMME, in order for α to be positive, we only need err<(K-1)/K. It's just a little better than random guessing.
+Note that SAMME  is very similar to AdaBoost, except the term log(K-1). Obviously, when K=2, SAMME is equivalent to AdaBoost. In SAMME, in order for α to be positive, we only need err less than (K-1)/K. It is just a little better than random guessing.
 
 ## SAMME and Forward Stagewise Additive Modeling
 We can mimic the steps in **AdaBoost and Forward Stagewise Additive Modeling** to prove SAMME is equivalent to Forward Stagewise Additive Modeling using a Multi-class Exponential loss function. 
@@ -102,7 +103,7 @@ We consider f(x) has following form:
 ![](http://www.forkosh.com/mathtex.cgi? \Large  f(x) = \sum_{m=1}^M\beta_{m}g_{m}(x) )
 where β is weight and g(x) is base classifier.
 
-Let's start from the loss function. The multi-class exponential loss function:
+Let us start from the loss function. The multi-class exponential loss function:
 
 ![](http://www.forkosh.com/mathtex.cgi? \Large  L(y,f)=exp[-1/K(y_1f_1+...+y_Kf_K)]\\=exp(-\frac{1}{K} y^Tf) )
 
