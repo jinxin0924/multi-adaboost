@@ -26,22 +26,30 @@ First let us take a look at **Additive Model**:
 ![Additive Model](http://upload-images.jianshu.io/upload_images/1825085-5c0556e913dc8425.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 Typically, {βm, γm} are estimated by minimizing some loss function L, which measures the prediction errors over training data.
+
 ![](http://upload-images.jianshu.io/upload_images/1825085-c908c9e7b2ad6e04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 Directly optimizing such loss function is often difficult. However, consider it is an additive model, a simple greedy method can be used. We can  sequentially optimize the following  loss function, then add new base functions to the expansion function f(x) without changing the parameters that have been added.
 
 ![loss function for each step](http://upload-images.jianshu.io/upload_images/1825085-f17795a2453e0199.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 Thus the Forward Stagewise Additive Modeling algorithm (denote FSAM) is:
+
 1. Initialize f_0(x)=0
+
 2. For *m* = 1 to *M* :
+
   a) Compute
-![](http://www.forkosh.com/mathtex.cgi? \Large  \ (\beta_m,\gamma_m) = \mathop{\arg\max}_{\beta, \gamma} \sum_{i=1}^{N} L[y_i,f_{m-1}(x_i) + \beta b(x_i;\gamma)]  (2.1)  )
+  
+![](http://www.forkosh.com/mathtex.cgi? \Large\(\beta_m,\gamma_m) = \mathop{\arg\max}_{\beta, \gamma} \sum_{i=1}^{N} L[y_i,f_{m-1}(x_i) + \beta b(x_i;\gamma)]  (2.1)  )
 
   b) Set 
+  
 ![](http://www.forkosh.com/mathtex.cgi? \Large  f_m(x) = f_{m-1}(x) + \beta_m b(x;\gamma_m)    --(2.2))
 
 ## AdaBoost and Forward Stagewise Additive Modeling
 In fact AdaBoost is equivalent to Forward Stagewise Additive Modeling using the exponential loss funtion
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  L[y,f(x)] = exp[-yf(x)]. )
 
 Again let T(x) denote a classifier that assigns a class label to x, in this case, T(x)=1 or -1.
@@ -50,31 +58,42 @@ Then (2.1) is:
 ![](http://www.forkosh.com/mathtex.cgi? \Large  (\beta_m,T_m) =  \mathop{\arg\max}_{\beta, T} \sum_{i=1}^{N} \ exp [-y_i[f_{m-1}(x_i) + \beta T(x_i)]]) 
 
 To simplify the expression, let 
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  w^{(m)}_i = exp[-y_i f_{m-1}(x_i)] ) 
+
 Notice that w depends neither on β nor T(x). 
 
 Then the expression is
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  (\beta_m,T_m) =  \mathop{\arg\max}_{\beta, T} \sum_{i=1}^{N} w^{(m)}_i exp [-\beta T(x_i)])
 
 It can be rewritten as
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  (\beta_m,T_m) =  \mathop{\arg\max}_{\beta, T} \ e^{-\beta}\sum_{y_i = T(x_i)} w^{(m)}_i  + e^{\beta}\sum_{y_i \neq T(x_i)} w^{(m)}_i \\  =  \mathop{\arg\max}_{\beta, T} \ (e^\beta - e^{-\beta}) \sum_{i=1}^N w_i^{(m)} I[y_i \neq T(x_i)] + e^{-\beta}\sum_{i=1}^N w_i^{(m)} )
 
 Now we can get that 
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large \beta _m=\frac{1}{2} log \frac{\sum_{i=1}^N w_i^{(m)} (1- I[y_i \neq T_m(x_i)]}{\sum_{i=1}^N I[y_i \neq T_m(x_i)]} )
 
 denote **err_m** as
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large err_m = \frac {\sum_{i=1}^N w_i^{(m)} I[y_i \neq T_m(x_i) ]} {\sum_{i=1}^N w_i^{(m)}} )
 
 Then 
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large \beta _m=\frac{1}{2} log \frac{1-err_m}{err_m})
 
 Look familiar, right? It is actually the the weak classifier weight for Adaboost, α_m, except the 1/2. I take the 1/2 as learning rate.
 
 Also recall w_m,
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  w^{(m)}_i = exp[-y_i f_{m-1}(x_i)] )
 Then 
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  w_i^{(m+1)}_i = w_i^{(m)} exp[-\beta_m y_i T_m(x_i)] \\= w_i^{(m)} \cdot exp[2\beta_m I[y_i \neq T_m(x_i)] \cdot exp(-\beta_m))
+
 using the fact that 
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  -y_iT_m(x_i)=2 \cdot I[ y_i \neq T_m(x_i)]-1)
 compare to the weight in AdaBoost,
 
@@ -108,8 +127,10 @@ Let us start from the loss function. The multi-class exponential loss function:
 ![](http://www.forkosh.com/mathtex.cgi? \Large  L(y,f)=exp[-1/K(y_1f_1+...+y_Kf_K)]\\=exp(-\frac{1}{K} y^Tf) )
 
 Then (2.1) in multi-class case is:
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  (\beta_m,g_m) =  \mathop{\arg\max}_{\beta, g} \sum_{i=1}^{N} \ exp [-\frac{1}{K} y_i^T(f_{m-1}(x_i) + \beta g(x_i)]  \\ =\mathop{\arg\max}_{\beta, g} \sum_{i=1}^{N}w_i\ exp[-\frac{1}{K}\beta y_i^T g(x_i)] \qquad\qquad(3.1)) 
 where 
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large w_i^m=exp[-\frac{1}{K}\beta y_i^Tf_{m-1}(x_i)] )
 Notice that every g(x) has a one-to-one correspondence with a multi-class classifier T (x) in the following way:
 ![](http://www.forkosh.com/mathtex.cgi? \Large T(x) =k,\qquad if \quad g_K(x)=1 )
@@ -117,9 +138,11 @@ Notice that every g(x) has a one-to-one correspondence with a multi-class classi
 Hence, solving for g_m(x)  is equivalent to finding the multi-class classifier T_m(x) that can generate g_m(x).
 
 Recall that in AdaBoost and Forward Stagewise Additive Modeling, we rewrite the expression as
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  (\beta_m,T_m) =  \mathop{\arg\max}_{\beta, T} \ e^{-\beta}\sum_{y_i = T(x_i)} w^{(m)}_i  + e^{\beta}\sum_{y_i \neq T(x_i)} w^{(m)}_i \\  =  \mathop{\arg\max}_{\beta, T} \ (e^\beta - e^{-\beta}) \sum_{i=1}^N w_i^{(m)} I[y_i \neq T(x_i)] + e^{-\beta}\sum_{i=1}^N w_i^{(m)} )
 
 Similarly, we rewrite (3.1) as
+
 ![](http://www.forkosh.com/mathtex.cgi? \Large  (\beta_m,T_m) =  \mathop{\arg\max}_{\beta, T} \ e^{-\frac{\beta}{K-1}}\sum_{c_i = T(x_i)} w^{(m)}_i  + e^{\frac{\beta}{(K-1)^2}}\sum_{c_i \neq T(x_i)} w^{(m)}_i \\  =  \mathop{\arg\max}_{\beta, T} \ [e^{\frac{\beta}{(K-1)^2}} - e^{-\frac{\beta}{K-1}} ]\sum_{i=1}^N w_i^{(m)} I[c_i \neq T(x_i)]+ e^{-\frac{\beta}{K-1}}\sum_{i=1}^N w_i^{(m)} )
 
 So the solution is
@@ -131,6 +154,7 @@ Look at the β_m, we can ignore (K-1)^2/K, the rest is just the difference betwe
 
 ## SAMME.R
 The SAMME algorithm expects the weak learner to deliver a classifier T (x) ∈ {1, . . . , K}. Analternative is to use real-valued confidence-rated predictions such as weighted probability estimates,to update the additive model, rather than the classifications themselves.
+
 ![](http://upload-images.jianshu.io/upload_images/1825085-d39bab8d151d2431.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ![](http://upload-images.jianshu.io/upload_images/1825085-0b4d10df6206fe19.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 In my opinion, the SAMME.R uses more information than SAMME, and has more robustness.
