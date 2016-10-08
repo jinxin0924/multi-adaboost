@@ -21,7 +21,7 @@ Pay attention to the weak classifier weight, α, to let α >0, we need to ensure
 
 ## Forward Stagewise Additive Modeling
 
-First let's take a look at **Additive Model**:
+First let us take a look at **Additive Model**:
 
 ![Additive Model](http://upload-images.jianshu.io/upload_images/1825085-5c0556e913dc8425.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
