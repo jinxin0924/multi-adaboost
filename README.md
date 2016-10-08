@@ -12,5 +12,4 @@ References:
 # Learning experience
 This is my learning experience when I read the paper [Multi-class AdaBoost](https://web.stanford.edu/~hastie/Papers/SII-2-3-A8-Zhu.pdf). To learn this new algorithm, first I reviewed **AdaBoost** and its relationship with  **Forward Stagewise Additive Modeling**. Then I realized that multi-AdaBoost is natural extension of AdaBoost.
 
-## AdaBoost
 For more details, please read [this](http://www.jianshu.com/p/1855b411794c).
