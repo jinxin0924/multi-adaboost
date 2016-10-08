@@ -5,8 +5,6 @@ from numpy.core.umath_tests import inner1d
 from copy import deepcopy
 
 
-
-
 class AdaBoostClassifier(object):
     '''
     Parameters
@@ -34,6 +32,12 @@ class AdaBoostClassifier(object):
 
     estimator_errors_: array of floats
         Classification error for each estimator in the boosted ensemble.
+
+    Reference:
+    1. [multi-adaboost](https://web.stanford.edu/~hastie/Papers/samme.pdf)
+
+    2. [scikit-learn:weight_boosting](https://github.com/scikit-learn/
+    scikit-learn/blob/51a765a/sklearn/ensemble/weight_boosting.py#L289)
 
     '''
 
@@ -74,7 +78,7 @@ class AdaBoostClassifier(object):
         self.estimator_errors_ = np.ones(self.n_estimators_)
 
 
-    def _samme_proba(self,estimator, n_classes, X):
+    def _samme_proba(self, estimator, n_classes, X):
         """Calculate algorithm 4, step 2, equation c) of Zhu et al [1].
 
         References
@@ -96,15 +100,15 @@ class AdaBoostClassifier(object):
 
     def fit(self, X, y):
         self.n_samples = X.shape[0]
-        #There is hidden trouble for classes, here the classes will be sorted.
+        # There is hidden trouble for classes, here the classes will be sorted.
         # So in boost we have to ensure that the predict results have the same classes sort
-        self.classes_ =  np.array(sorted(list(set(y))))
-        self.n_classes_= len(self.classes_)
+        self.classes_ = np.array(sorted(list(set(y))))
+        self.n_classes_ = len(self.classes_)
         for iboost in range(self.n_estimators_):
             if iboost == 0:
                 sample_weight = np.ones(self.n_samples) / self.n_samples
 
-            sample_weight, estimator_weight, estimator_error = self.boost(X, y,sample_weight)
+            sample_weight, estimator_weight, estimator_error = self.boost(X, y, sample_weight)
 
             # early stop
             if estimator_error == None:
@@ -141,8 +145,8 @@ class AdaBoostClassifier(object):
         if estimator_error >= 1.0 - 1 / self.n_classes_:
             return None, None, None
 
-        y_predict_proba=estimator.predict_proba(X)
-        #repalce zero
+        y_predict_proba = estimator.predict_proba(X)
+        # repalce zero
         y_predict_proba[y_predict_proba < np.finfo(y_predict_proba.dtype).eps] = np.finfo(y_predict_proba.dtype).eps
 
         y_codes = np.array([-1. / (self.n_classes_ - 1), 1.])
@@ -150,7 +154,8 @@ class AdaBoostClassifier(object):
 
         # for sample weight update
         intermediate_variable = (-1. * self.learning_rate_ * (((self.n_classes_ - 1) / self.n_classes_) *
-                                   inner1d(y_coding, np.log(y_predict_proba))))  #dot iterate for each row
+                                                              inner1d(y_coding, np.log(
+                                                                  y_predict_proba))))  #dot iterate for each row
 
         # update sample weight
         sample_weight *= np.exp(intermediate_variable)
@@ -213,7 +218,7 @@ class AdaBoostClassifier(object):
         if self.algorithm_ == 'SAMME.R':
             # The weights are all 1. for SAMME.R
             pred = sum(self._samme_proba(estimator, n_classes, X) for estimator in self.estimators_)
-        else:   # self.algorithm == "SAMME"
+        else:  # self.algorithm == "SAMME"
             pred = sum((estimator.predict(X) == classes).T * w
                        for estimator, w in zip(self.estimators_,
                                                self.estimator_weights_))
@@ -221,7 +226,7 @@ class AdaBoostClassifier(object):
         pred /= self.estimator_weights_.sum()
         if n_classes == 2:
             pred[:, 0] *= -1
-            pred=pred.sum(axis=1)
+            pred = pred.sum(axis=1)
             return self.classes_.take(pred > 0, axis=0)
 
         return self.classes_.take(np.argmax(pred, axis=1), axis=0)
@@ -232,7 +237,7 @@ class AdaBoostClassifier(object):
             # The weights are all 1. for SAMME.R
             proba = sum(self._samme_proba(estimator, self.n_classes_, X)
                         for estimator in self.estimators_)
-        else:   # self.algorithm == "SAMME"
+        else:  # self.algorithm == "SAMME"
             proba = sum(estimator.predict_proba(X) * w
                         for estimator, w in zip(self.estimators_,
                                                 self.estimator_weights_))
