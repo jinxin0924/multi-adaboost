@@ -17,7 +17,7 @@ Let T(x) denote a weak multi-class classifier that assigns a class label to x, t
 
 ![AdaBoost](http://upload-images.jianshu.io/upload_images/1825085-234a26e11524427e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-Pay attention to the weak classifier weight, α, to let α >0, we need to ensure the err<0.5. This can be easily done when it's binary classification problem, because error rate of random guessing is 0.5. But  it is difficult to achieve in multi-class case. So it may easily fail in multi-class case.
+Pay attention to the weak classifier weight, α, to let α >0, we need to ensure the err<0.5. This can be easily done when it is binary classification problem, because error rate of random guessing is 0.5. But  it is difficult to achieve in multi-class case. So it may easily fail in multi-class case.
 
 ## Forward Stagewise Additive Modeling
 
